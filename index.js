@@ -127,26 +127,24 @@ function parseFile(entry, DICT_US, DICT_UK, callback) {
 }
 
 function writeFile(entry, callback) {
-  var cnt = 0;
+  var count = 0;
   entry.forEach(function (v) {
     fs.writeFile('./' + outputValue + '/' + v.lemma + '.json', JSON.stringify(v.exist, null, 2), 'utf8', function (err) {
       if (err) {
         throw err
       }
     });
-    cnt = cnt + 1;
+    count++
   });
-
-  callback && callback(cnt);
+  var end = new Date() - start;
+  callback && callback(end, count);
 }
 
 InitDic(function (DICT_US, DICT_UK) {
   readfile(function (result) {
     parseFile(result, DICT_US, DICT_UK, function (output) {
-      writeFile(output, function (callback) {
-        var end = new Date() - start;
-        console.info(callback + " Files Generated");
-        console.info("Execution time: %dms", end);
+      writeFile(output, function (callback1, callback2) {
+        console.log('Task Finished, %sms used, %s file generated', callback1, callback2)
       })
     })
   })
