@@ -13,7 +13,7 @@ program
   .option('-p, --pretty', 'Pretty Formatted JSON in the outputs', false)
   .option('-m, --metadata', 'Generate Metadata', false)
   .option('-s, --spell', 'Enable Spell Checker', false)
-  .arguments('<cmd> <output> <dictionaryPath>')
+  .arguments('<cmd> <output> [dictionaryPath]')
   .action(function (cmd, output, dictionaryPath) {
     cmdValue = cmd;
     dictionaryPathValue = dictionaryPath;
@@ -31,17 +31,19 @@ var spellchecker_UK = new SpellChecker();
  */
 function InitDic(callback) {
 
-  var DICT_US = spellchecker_US.parse({
-    aff: fs.readFileSync(dictionaryPathValue + "/en_US.aff"),
-    dic: fs.readFileSync(dictionaryPathValue + "/en_US.dic")
-  });
-
-  var DICT_UK = spellchecker_UK.parse({
-    aff: fs.readFileSync(dictionaryPathValue + "/en_GB.aff"),
-    dic: fs.readFileSync(dictionaryPathValue + "/en_GB.dic")
-  });
-
-  callback && callback(DICT_US, DICT_UK);
+  if (program.spell) {
+    var DICT_US = spellchecker_US.parse({
+      aff: fs.readFileSync(dictionaryPathValue + "/en_US.aff"),
+      dic: fs.readFileSync(dictionaryPathValue + "/en_US.dic")
+    });
+    var DICT_UK = spellchecker_UK.parse({
+      aff: fs.readFileSync(dictionaryPathValue + "/en_GB.aff"),
+      dic: fs.readFileSync(dictionaryPathValue + "/en_GB.dic")
+    });
+    callback && callback(DICT_US, DICT_UK);
+  } else {
+    callback && callback(null, null);
+  }
 }
 // End Init Dictionary Buffer
 
@@ -126,6 +128,11 @@ function parseFile(entry, DICT_US, DICT_UK, callback) {
   }
 }
 
+/**
+ * File Writer
+ * @param entry     Upstream Parsed Result JSON Object
+ * @param callback
+ */
 function writeFile(entry, callback) {
   var count = 0;
   entry.forEach(function (v) {
