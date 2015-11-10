@@ -18,6 +18,7 @@
   "homepage": "https://gitlab.com/d201-c317/json-transformer#README",
   "dependencies": {
     "commander": "^2.9.0",
+    "hunspell-spellchecker": "^1.0.2",
     "underscore": "^1.8.3"
   }
 }
