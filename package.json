@@ -1,0 +1,23 @@
+{
+  "name": "json-transformer",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/d201-c317/json-transformer.git"
+  },
+  "author": "",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://gitlab.com/d201-c317/json-transformer/issues"
+  },
+  "homepage": "https://gitlab.com/d201-c317/json-transformer#README",
+  "dependencies": {
+    "commander": "^2.9.0",
+    "underscore": "^1.8.3"
+  }
+}
