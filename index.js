@@ -129,11 +129,19 @@ function parseFile(entry, DICT_US, DICT_UK, callback) {
 function writeFile(entry, callback) {
   var count = 0;
   entry.forEach(function (v) {
-    fs.writeFile('./' + outputValue + '/' + v.lemma + '.json', JSON.stringify(v.exist, null, 2), 'utf8', function (err) {
-      if (err) {
-        throw err
-      }
-    });
+    if (program.pretty) {
+      fs.writeFile('./' + outputValue + '/' + v.lemma + '.json', JSON.stringify(v.exist, null, 2), 'utf8', function (err) {
+        if (err) {
+          throw err
+        }
+      });
+    } else {
+      fs.writeFile('./' + outputValue + '/' + v.lemma + '.json', JSON.stringify(v.exist), 'utf8', function (err) {
+        if (err) {
+          throw err
+        }
+      });
+    }
     count++
   });
   var end = new Date() - start;
