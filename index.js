@@ -13,10 +13,11 @@ program
   .option('-p, --pretty', 'Pretty Formatted JSON in the outputs', false)
   .option('-m, --metadata', 'Generate Metadata', false)
   .option('-s, --spell', 'Enable Spell Checker', false)
-  .arguments('<cmd> <dictionaryPath>')
-  .action(function (cmd, dictionaryPath) {
+  .arguments('<cmd> <output> <dictionaryPath>')
+  .action(function (cmd, output, dictionaryPath) {
     cmdValue = cmd;
     dictionaryPathValue = dictionaryPath;
+    outputValue = output;
   });
 
 program.parse(process.argv);
@@ -53,10 +54,11 @@ function readfile(callback) {
     if (err) {
       callback && callback(err);
     } else {
-      var dir = './output';
+      var dir = './' + outputValue;
       if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir);
       }
+
       callback && callback(data);
     }
   });
@@ -79,8 +81,8 @@ function parseFile(entry, DICT_US, DICT_UK, callback) {
     if (program.spell) {
       spellchecker_US.use(DICT_US);
       spellchecker_UK.use(DICT_UK);
-      var checking = _.map(data, function (d, k) {
-        if (k.match(/^[a-zA-Z]+$/) && k.length > 1 && spellchecker_US.check(k) || spellchecker_UK.check(k)) {
+      var checking = _.mapObject(data, function (d, k) {
+        if (k.match(/^[A-Z]+$/i) && k.length > 1 && (spellchecker_US.check(k) || spellchecker_UK.check(k))) {
           return {
             lemma: k,
             exist: _.map(d, function (e) {
@@ -100,8 +102,8 @@ function parseFile(entry, DICT_US, DICT_UK, callback) {
 
       callback && callback(rejecting);
     } else {
-      var checked = _.map(data, function (d, k) {
-        if (k.match(/^[a-zA-Z]+$/) && k.length > 1) {
+      var checked = _.mapObject(data, function (d, k) {
+        if (k.match(/^[A-Z]+$/i) && k.length > 1) {
           return {
             lemma: k,
             exist: _.map(d, function (e) {
@@ -124,11 +126,28 @@ function parseFile(entry, DICT_US, DICT_UK, callback) {
   }
 }
 
+function writeFile(entry, callback) {
+  var cnt = 0;
+  entry.forEach(function (v) {
+    fs.writeFile('./' + outputValue + '/' + v.lemma + '.json', JSON.stringify(v.exist, null, 2), 'utf8', function (err) {
+      if (err) {
+        throw err
+      }
+    });
+    cnt = cnt + 1;
+  });
+
+  callback && callback(cnt);
+}
 
 InitDic(function (DICT_US, DICT_UK) {
   readfile(function (result) {
-    parseFile(result, DICT_US, DICT_UK, function (callback) {
-      console.log(JSON.stringify(callback, null, 2));
+    parseFile(result, DICT_US, DICT_UK, function (output) {
+      writeFile(output, function (callback) {
+        var end = new Date() - start;
+        console.info(callback + " Files Generated");
+        console.info("Execution time: %dms", end);
+      })
     })
   })
 });
