@@ -155,6 +155,9 @@ function writeFile(entry, callback) {
   callback && callback(end, count);
 }
 
+/**
+ * Application Core Runtime
+ */
 InitDic(function (DICT_US, DICT_UK) {
   readfile(function (result) {
     parseFile(result, DICT_US, DICT_UK, function (output) {
