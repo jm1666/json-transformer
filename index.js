@@ -84,7 +84,7 @@ function parseFile(entry, DICT_US, DICT_UK, callback) {
       spellchecker_US.use(DICT_US);
       spellchecker_UK.use(DICT_UK);
       var checking = _.mapObject(data, function (Rval, Rkey) {
-        if (k.match(/^[A-Z]+$/i) && k.length > 1 && (spellchecker_US.check(k) || spellchecker_UK.check(k))) {
+        if (Rkey.match(/^[A-Z]+$/i) && Rkey.length > 1 && (spellchecker_US.check(Rkey) || spellchecker_UK.check(Rkey))) {
           return {
             lemma: Rkey,
             exist: _.mapObject(Rval, function (Sval, Skey) {
@@ -107,7 +107,7 @@ function parseFile(entry, DICT_US, DICT_UK, callback) {
       callback && callback(rejecting);
     } else {
       var checked = _.mapObject(data, function (Rval, Rkey) {
-        if (k.match(/^[A-Z]+$/i) && k.length > 1) {
+        if (Rkey.match(/^[A-Z]+$/i) && Rkey.length > 1) {
           return {
             lemma: Rkey,
             exist: _.mapObject(Rval, function (Sval, Skey)  {
