@@ -90,7 +90,7 @@ function parseFile(entry, DICT_US, DICT_UK, callback) {
               return _.map(Cval, function(v, k) {
                 return {
                   path: k,
-                  count: v
+                  time: v
                 }
               })[0]
             })
