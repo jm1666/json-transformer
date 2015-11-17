@@ -89,7 +89,7 @@ function parseFile(entry, DICT_US, DICT_UK, callback) {
             exist: _.map(Rval, function(Cval) {
               return _.map(Cval, function(v, k) {
                 return {
-                  path: k.replace(".count", "").replace(/[\/]/g, ",").replace(/[_]/g, " ").replace(/(Topic)/g, "Topic ").replace(/(Lab)/g, "Lab "),
+                  path: k.replace(".count", "").replace(/[\/]/g, ",").replace(/[_]/g, " "),
                   time: v
                 }
               })[0]
@@ -107,7 +107,7 @@ function parseFile(entry, DICT_US, DICT_UK, callback) {
             exist: _.map(Rval, function(Cval) {
               return _.map(Cval, function(v, k) {
                 return {
-                  path: k.replace(".count", "").replace(/[\/]/g, ",").replace(/[_]/g, " ").replace(/(Topic)\d/g, "Topic ").replace(/(Lab)\d/g, "Lab "),
+                  path: k.replace(".count", "").replace(/[\/]/g, ",").replace(/[_]/g, " "),
                   count: v
                 }
               })[0]
