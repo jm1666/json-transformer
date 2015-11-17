@@ -99,7 +99,7 @@ function parseFile(entry, DICT_US, DICT_UK, callback) {
           return false;
         }
       });
-    } else {Edit
+    } else {
       var checking = _.mapObject(data, function(Rval, Rkey) {
         if (Rkey.match(/^[A-Z]+$/i) && Rkey.length > 1) {
           return {
