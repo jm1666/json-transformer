@@ -89,7 +89,7 @@ function parseFile(entry, DICT_US, DICT_UK, callback) {
             exist: _.map(Rval, function(Cval) {
               return _.map(Cval, function(v, k) {
                 return {
-                  path: k.replace(".count", "").replace(/[\/]/g, ",").replace(/[_]/g, " ").replace("Topic", "Topic ").replace("Lab", "Lab "),
+                  path: k.replace(".count", "").replace(/[\/]/g, ",").replace(/[_]/g, " ").replace(/(Topic)\d/g, "Topic ").replace(/(Lab)\d/g, "Lab "),
                   time: v
                 }
               })[0]
@@ -99,7 +99,7 @@ function parseFile(entry, DICT_US, DICT_UK, callback) {
           return false;
         }
       });
-    } else {
+    } else {Edit
       var checking = _.mapObject(data, function(Rval, Rkey) {
         if (Rkey.match(/^[A-Z]+$/i) && Rkey.length > 1) {
           return {
@@ -107,7 +107,7 @@ function parseFile(entry, DICT_US, DICT_UK, callback) {
             exist: _.map(Rval, function(Cval) {
               return _.map(Cval, function(v, k) {
                 return {
-                  path: k.replace(".count", "").replace(/[\/]/g, ",").replace(/[_]/g, " ").replace("Topic", "Topic ").replace("Lab", "Lab "),
+                  path: k.replace(".count", "").replace(/[\/]/g, ",").replace(/[_]/g, " ").replace(/(Topic)\d/g, "Topic ").replace(/(Lab)\d/g, "Lab "),
                   count: v
                 }
               })[0]
