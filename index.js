@@ -108,7 +108,7 @@ function parseFile(entry, DICT_US, DICT_UK, callback) {
               return _.map(Cval, function(v, k) {
                 return {
                   path: k.replace(".count", "").replace(/[\/]/g, ",").replace(/[_]/g, " "),
-                  count: v
+                  time: v
                 }
               })[0]
             })
@@ -123,7 +123,7 @@ function parseFile(entry, DICT_US, DICT_UK, callback) {
       return d == false
     });
 
-    callback && callback(_.sortBy(rejecting, 'count').reverse());
+    callback && callback(rejecting);
   }
 }
 
@@ -134,6 +134,7 @@ function parseFile(entry, DICT_US, DICT_UK, callback) {
  */
 function writeFile(entry, callback) {
   var count = 0;
+  entry = _.sortBy(entry, 'time').reverse();
   entry.forEach(function(v) {
     if (program.pretty) {
       fs.writeFile('./' + outputValue + '/' + v.lemma + '.json',
