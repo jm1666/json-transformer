@@ -123,7 +123,7 @@ function parseFile(entry, DICT_US, DICT_UK, callback) {
       return d == false
     });
 
-    callback && callback(rejecting);
+    callback && callback(_.sortBy(rejecting, 'count').reverse());
   }
 }
 
