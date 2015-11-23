@@ -84,35 +84,37 @@ function parseFile(entry, DICT_US, DICT_UK, callback) {
       var checking = _.mapObject(data, function(Rval, Rkey) {
         if (Rkey.match(/^[A-Z]+$/i) && Rkey.length > 1 &&
           (spellchecker_US.check(Rkey) || spellchecker_UK.check(Rkey))) {
-          return {
-            lemma: Rkey,
-            exist: _.map(Rval, function(Cval) {
-              return _.map(Cval, function(v, k) {
-                return {
-                  path: k.replace(".count", "").replace(/[\/]/g, ",").replace(/[_]/g, " "),
-                  time: v
-                }
-              })[0]
-            })
-          }
-        } else {
+			var existData = _.map(Rval, function(Cval) {
+				 return _.map(Cval, function(v, k) {
+					 return {
+						 path: k.replace(".count", "").replace(/[\/]/g, ",").replace(/[_]/g, " "),
+						 time: v
+					 }
+				 })[0]
+			})
+			return {
+				lemma: Rkey,
+				exist: _.sortBy(existData, 'time').reverse()
+			}
+		} else {
           return false;
         }
       });
     } else {
       var checking = _.mapObject(data, function(Rval, Rkey) {
         if (Rkey.match(/^[A-Z]+$/i) && Rkey.length > 1) {
-          return {
-            lemma: Rkey,
-            exist: _.map(Rval, function(Cval) {
-              return _.map(Cval, function(v, k) {
-                return {
-                  path: k.replace(".count", "").replace(/[\/]/g, ",").replace(/[_]/g, " "),
-                  time: v
-                }
-              })[0]
-            })
-          }
+			var existData = _.map(Rval, function(Cval) {
+				 return _.map(Cval, function(v, k) {
+					 return {
+						 path: k.replace(".count", "").replace(/[\/]/g, ",").replace(/[_]/g, " "),
+						 time: v
+					 }
+				 })[0]
+			})
+			return {
+				lemma: Rkey,
+				exist: _.sortBy(existData, 'time').reverse()
+			}
         } else {
           return false;
         }
@@ -134,7 +136,6 @@ function parseFile(entry, DICT_US, DICT_UK, callback) {
  */
 function writeFile(entry, callback) {
   var count = 0;
-  entry = _.sortBy(entry, 'time').reverse();
   entry.forEach(function(v) {
     if (program.pretty) {
       fs.writeFile('./' + outputValue + '/' + v.lemma + '.json',
