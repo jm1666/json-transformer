@@ -133,6 +133,7 @@ function parseFile(entry, DICT_US, DICT_UK, callback) {
  * @param callback
  */
 function writeFile(entry, callback) {
+  entry = _.sortBy(entry, 'count').reverse();
   var count = 0;
   entry.forEach(function(v) {
     if (program.pretty) {
