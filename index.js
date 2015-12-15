@@ -14,7 +14,7 @@ program.version('1.0.0')
   .option('-m, --metadata', 'Generate Metadata', false)
   .option('-s, --spell', 'Enable Spell Checker', false)
   .arguments('<cmd> <output> [dictionaryPath]')
-  .action(function(cmd, output, dictionaryPath) {
+  .action(function (cmd, output, dictionaryPath) {
     cmdValue = cmd;
     dictionaryPathValue = dictionaryPath;
     outputValue = output;
@@ -51,7 +51,7 @@ function InitDic(callback) {
  * @param callback   Result Exported For Downstream Processing
  */
 function readfile(callback) {
-  fs.readFile(cmdValue, 'utf8', function(err, data) {
+  fs.readFile(cmdValue, 'utf8', function (err, data) {
     if (err) {
       callback && callback(err);
     } else {
@@ -78,50 +78,56 @@ function parseFile(entry, DICT_US, DICT_UK, callback) {
     process.exit(1);
   } else {
     var data = JSON.parse(entry);
+    var checking = [];
     if (program.spell) {
       spellchecker_US.use(DICT_US);
       spellchecker_UK.use(DICT_UK);
-      var checking = _.mapObject(data, function(Rval, Rkey) {
-        if (Rkey.match(/^[A-Z]+$/i) && Rkey.length > 1 &&
-          (spellchecker_US.check(Rkey) || spellchecker_UK.check(Rkey))) {
-          return {
-            lemma: Rkey,
-            exist: _.map(Rval, function(Cval) {
-              return _.map(Cval, function(v, k) {
-                return {
-                  path: k.replace(/(OCR_PDF\/)/g, "").replace(".count", "").replace(/[\/]/g, ",").replace(/[_]/g, " "),
-                  time: v
-                }
-              })[0]
+      _.mapObject(data, function (Qval, Qkey) {
+        return _.mapObject(Qval, function (Rval, Rkey) {
+          if (Rkey.match(/^[A-Z]+$/i) && Rkey.length > 1 && (spellchecker_US.check(Rkey) || spellchecker_UK.check(Rkey))) {
+            checking.push({
+              lemma: Rkey,
+              exist: _.map(Rval, function (Cval, Ckey) {
+                return _.map(Cval, function (v, k) {
+                  return {
+                    path: k.replace(/(OCR_PDF\/)/g, "").replace(".count", "").replace(/[\/]/g, ",").replace(/[_]/g, " "),
+                    time: v
+                  }
+                })[0]
+              })
             })
+          } else {
+            checking.push(false);
           }
-        } else {
-          return false;
-        }
+        })
       });
-    } else {
-      var checking = _.mapObject(data, function(Rval, Rkey) {
-        if (Rkey.match(/^[A-Z]+$/i) && Rkey.length > 1) {
-          return {
-            lemma: Rkey,
-            exist: _.map(Rval, function(Cval) {
-              return _.map(Cval, function(v, k) {
-                return {
-                  path: k.replace(/(OCR_PDF\/)/g, "").replace(".count", "").replace(/[\/]/g, ",").replace(/[_]/g, " "),
-                  time: v
-                }
-              })[0]
+    }
+    else {
+      _.mapObject(data, function (Qval, Qkey) {
+        return _.mapObject(Qval, function (Rval, Rkey) {
+          if (Rkey.match(/^[A-Z]+$/i) && Rkey.length > 1) {
+            checking.push({
+              lemma: Rkey,
+              exist: _.map(Rval, function (Cval, Ckey) {
+                return _.map(Cval, function (v, k) {
+                  return {
+                    path: k.replace(/(OCR_PDF\/)/g, "").replace(".count", "").replace(/[\/]/g, ",").replace(/[_]/g, " "),
+                    time: v
+                  }
+                })[0]
+              })
             })
+          } else {
+            checking.push(false);
           }
-        } else {
-          return false;
-        }
+        })
       });
     }
 
-    var rejecting = _.reject(checking, function(d) {
+    var rejecting = _.reject(checking, function (d) {
       return d == false
     });
+
 
     callback && callback(rejecting);
   }
@@ -134,11 +140,11 @@ function parseFile(entry, DICT_US, DICT_UK, callback) {
  */
 function writeFile(entry, callback) {
   var count = 0;
-  entry.forEach(function(v) {
+  entry.forEach(function (v) {
     if (program.pretty) {
       fs.writeFile('./' + outputValue + '/' + v.lemma + '.json',
         JSON.stringify(_.sortBy(v.exist, 'time').reverse(), null, 2), 'utf8',
-        function(err) {
+        function (err) {
           if (err) {
             throw err
           }
@@ -146,7 +152,7 @@ function writeFile(entry, callback) {
     } else {
       fs.writeFile('./' + outputValue + '/' + v.lemma + '.json',
         JSON.stringify(_.sortBy(v.exist, 'time').reverse()), 'utf8',
-        function(err) {
+        function (err) {
           if (err) {
             throw err
           }
@@ -161,10 +167,10 @@ function writeFile(entry, callback) {
 /**
  * Application Core Runtime
  */
-InitDic(function(DICT_US, DICT_UK) {
-  readfile(function(result) {
-    parseFile(result, DICT_US, DICT_UK, function(output) {
-      writeFile(output, function(callback1, callback2) {
+InitDic(function (DICT_US, DICT_UK) {
+  readfile(function (result) {
+    parseFile(result, DICT_US, DICT_UK, function (output) {
+      writeFile(output, function (callback1, callback2) {
         console.log(
           'Task Finished, %sms used, %s file generated',
           callback1,
