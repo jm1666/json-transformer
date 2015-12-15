@@ -86,7 +86,8 @@ function parseFile(entry, DICT_US, DICT_UK, callback) {
         return _.mapObject(Qval, function (Rval, Rkey) {
           if (Rkey.match(/^[A-Z]+$/i) && Rkey.length > 1 && (spellchecker_US.check(Rkey) || spellchecker_UK.check(Rkey))) {
             checking.push({
-              lemma: Rkey,
+              lemma: Qkey,
+              word: Rkey,
               exist: _.map(Rval, function (Cval, Ckey) {
                 return _.map(Cval, function (v, k) {
                   return {
@@ -107,7 +108,8 @@ function parseFile(entry, DICT_US, DICT_UK, callback) {
         return _.mapObject(Qval, function (Rval, Rkey) {
           if (Rkey.match(/^[A-Z]+$/i) && Rkey.length > 1) {
             checking.push({
-              lemma: Rkey,
+              lemma: Qkey,
+              word: Rkey,
               exist: _.map(Rval, function (Cval, Ckey) {
                 return _.map(Cval, function (v, k) {
                   return {
@@ -128,7 +130,6 @@ function parseFile(entry, DICT_US, DICT_UK, callback) {
       return d == false
     });
 
-
     callback && callback(rejecting);
   }
 }
@@ -142,7 +143,7 @@ function writeFile(entry, callback) {
   var count = 0;
   entry.forEach(function (v) {
     if (program.pretty) {
-      fs.writeFile('./' + outputValue + '/' + v.lemma + '.json',
+      fs.writeFile('./' + outputValue + '/' + v.lemma + '_'+ v.word +'.json',
         JSON.stringify(_.sortBy(v.exist, 'time').reverse(), null, 2), 'utf8',
         function (err) {
           if (err) {
@@ -150,7 +151,7 @@ function writeFile(entry, callback) {
           }
         });
     } else {
-      fs.writeFile('./' + outputValue + '/' + v.lemma + '.json',
+      fs.writeFile('./' + outputValue + '/' + v.lemma + '_'+ v.word + '.json',
         JSON.stringify(_.sortBy(v.exist, 'time').reverse()), 'utf8',
         function (err) {
           if (err) {
