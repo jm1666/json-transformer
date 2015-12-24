@@ -4,7 +4,7 @@
  * Created by lawrencelaw on 10/11/2015.
  */
 var program = require('commander');
-var fs = require('fs');
+var fs = require('graceful-fs');
 var _ = require('underscore');
 var SpellChecker = require('hunspell-spellchecker');
 var start = new Date();
