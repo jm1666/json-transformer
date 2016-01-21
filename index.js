@@ -1,8 +1,4 @@
-#!/usr/bin / env node
-
-/**
- * Created by lawrencelaw on 10/11/2015.
- */
+#!/usr/bin/env node
 var program = require('commander');
 var fs = require('graceful-fs');
 var _ = require('underscore');
